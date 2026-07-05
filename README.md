@@ -2,6 +2,55 @@
 
 Small Windows and macOS desktop calendar app with Korean, English, Japanese, and Chinese UI support.
 
+## Language
+
+| [한국어](#한국어) | [English](#english) | [日本語](#日本語) | [中文](#中文) |
+| --- | --- | --- | --- |
+
+## Architecture
+
+```mermaid
+flowchart LR
+  User[User] --> UI[Static HTML/CSS/JavaScript UI]
+  UI --> Core[calendar-core.mjs]
+  UI --> HolidayService[holiday-service.mjs]
+  HolidayService --> API["Nager.Date REST API"]
+  HolidayService <--> Cache["localStorage holiday cache"]
+  Core --> Localized["Localized calendar and holiday labels"]
+  UI --> Tauri["Tauri 2 desktop shell"]
+  Tauri --> WebView["System WebView: WebKit on macOS, WebView2 on Windows"]
+```
+
+The app keeps the Rust/Tauri side intentionally small. The calendar state, date math, holiday normalization, localization, and cache fallback are implemented in plain JavaScript under `src/`.
+
+## Holiday Updates
+
+Holiday data is fetched per country and year:
+
+```http
+GET https://date.nager.at/api/v4/Holidays/{CountryCode}/{Year}
+```
+
+Examples:
+
+```http
+GET https://date.nager.at/api/v4/Holidays/KR/2026
+GET https://date.nager.at/api/v4/Holidays/US/2026
+GET https://date.nager.at/api/v4/Holidays/JP/2026
+GET https://date.nager.at/api/v4/Holidays/CN/2026
+```
+
+Fields used by the app:
+
+- `date`: ISO date used as the calendar key
+- `name`: API holiday name
+- `countryCode`: selected holiday country
+- `nationalHoliday`: national holiday flag
+- `subdivisionCodes`: regional holiday scope when available
+- `holidayTypes`: public, bank, or observance type labels
+
+The app stores the raw API rows in `localStorage` by country and year. On startup or month navigation it loads cached rows first, then tries a network update. If the network update fails, the calendar stays usable with the latest cached rows. Nager.Date v4 currently returns English holiday names for the supported countries, so the app maps known holiday names and holiday type labels into Korean, English, Japanese, and Chinese before rendering; unknown names fall back to the API value.
+
 ## 한국어
 
 Simple Calendar는 Windows와 macOS에서 실행되는 작은 데스크톱 달력 앱입니다. Tauri 2와 정적 HTML/CSS/JavaScript로 만들어져 운영체제의 WebView를 사용하며, 가벼운 portable 산출물을 목표로 합니다.

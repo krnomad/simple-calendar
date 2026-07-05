@@ -22,7 +22,7 @@ if ($null -eq $sizeBytes) {
 $sizeMb = [math]::Round($sizeBytes / 1MB, 2)
 $limitMb = [math]::Round($LimitBytes / 1MB, 2)
 
-Write-Output "$Path: ${sizeMb}MB"
+Write-Output "${Path}: ${sizeMb}MB"
 
 if ($sizeBytes -gt $LimitBytes) {
   Write-Error "Size check failed: ${sizeMb}MB is above ${limitMb}MB"

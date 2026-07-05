@@ -1,6 +1,6 @@
 [package]
 name = "simple-calendar"
-version = "0.1.0"
+version = "0.1.1"
 description = "Small Korean, English, Japanese, and Chinese desktop calendar app."
 authors = ["krnomad"]
 edition = "2021"

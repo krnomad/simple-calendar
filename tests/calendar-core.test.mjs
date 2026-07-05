@@ -47,8 +47,8 @@ test("normalizeHolidayApi groups multiple public holidays by ISO date", () => {
     "Another Local Name",
   ]);
   assert.deepEqual(holidays["2026-01-01"].map((holiday) => holiday.types), [
-    ["Public"],
-    ["Bank"],
+    ["공휴일"],
+    ["은행 휴일"],
   ]);
 });
 
@@ -67,6 +67,37 @@ test("normalizeHolidayApi prefers English holiday names for English UI", () => {
   );
 
   assert.equal(holidays["2026-01-01"][0].label, "New Year's Day");
+});
+
+test("normalizeHolidayApi localizes English-only v4 holiday names", () => {
+  const row = {
+    date: "2026-02-17",
+    name: "Lunar New Year",
+    countryCode: "KR",
+    holidayTypes: ["Public"],
+  };
+
+  assert.equal(normalizeHolidayApi([row], "ko")["2026-02-17"][0].label, "설날");
+  assert.equal(normalizeHolidayApi([row], "ja")["2026-02-17"][0].label, "旧正月");
+  assert.equal(normalizeHolidayApi([row], "zh")["2026-02-17"][0].label, "农历新年");
+  assert.equal(normalizeHolidayApi([row], "en")["2026-02-17"][0].label, "Lunar New Year");
+});
+
+test("normalizeHolidayApi falls back to API names for unknown holidays", () => {
+  const holidays = normalizeHolidayApi(
+    [
+      {
+        date: "2026-08-01",
+        name: "Unknown Local Holiday",
+        countryCode: "US",
+        holidayTypes: ["Observance"],
+      },
+    ],
+    "ja",
+  );
+
+  assert.equal(holidays["2026-08-01"][0].label, "Unknown Local Holiday");
+  assert.deepEqual(holidays["2026-08-01"][0].types, ["記念日"]);
 });
 
 test("locale configuration supports Korean, English, Japanese, and Chinese", () => {
