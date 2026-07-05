@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; connect-src https://date.nager.at; style-src 'self'; script-src 'self'; img-src 'self' data:"
+    />
+    <title>Simple Calendar</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="toolbar" aria-label="Calendar controls">
+        <section class="month-controls" aria-label="Month navigation">
+          <button class="icon-button" id="prevMonth" type="button" title="Previous month" aria-label="Previous month">
+            <span aria-hidden="true">‹</span>
+          </button>
+          <button class="icon-button" id="todayButton" type="button" title="Today" aria-label="Today">
+            <span aria-hidden="true">◎</span>
+          </button>
+          <button class="icon-button" id="nextMonth" type="button" title="Next month" aria-label="Next month">
+            <span aria-hidden="true">›</span>
+          </button>
+          <h1 id="monthLabel">Simple Calendar</h1>
+        </section>
+
+        <section class="settings" aria-label="Calendar settings">
+          <label class="field">
+            <span id="languageLabel">Language</span>
+            <select id="languageSelect"></select>
+          </label>
+          <label class="field">
+            <span id="countryLabel">Country</span>
+            <select id="countrySelect"></select>
+          </label>
+          <button class="update-button" id="updateButton" type="button">
+            <span aria-hidden="true">↻</span>
+            <span id="updateButtonLabel">Update</span>
+          </button>
+        </section>
+      </header>
+
+      <section class="status-line" aria-live="polite">
+        <span id="statusText">Ready</span>
+      </section>
+
+      <section class="workspace">
+        <section class="calendar-pane" aria-label="Month calendar">
+          <div class="weekday-row" id="weekdayRow" aria-hidden="true"></div>
+          <div class="calendar-grid" id="calendarGrid"></div>
+        </section>
+
+        <aside class="detail-pane" aria-label="Selected day">
+          <p class="eyebrow" id="selectedLabel">Selected date</p>
+          <h2 id="selectedDate">-</h2>
+          <div class="holiday-list" id="holidayList"></div>
+        </aside>
+      </section>
+    </main>
+
+    <script type="module" src="./main.mjs"></script>
+  </body>
+</html>

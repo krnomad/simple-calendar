@@ -1,0 +1,22 @@
+{
+  "name": "simple-calendar",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Small Korean, English, Japanese, and Chinese desktop calendar app.",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "check": "npm run test && node --check src/calendar-core.mjs && node --check src/holiday-service.mjs && node --check src/main.mjs",
+    "tauri": "tauri",
+    "dev": "tauri dev",
+    "build": "tauri build --no-bundle",
+    "build:mac": "tauri build --bundles app",
+    "build:portable": "tauri build --no-bundle",
+    "build:windows-cross": "CARGO_BUILD_JOBS=1 CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER=x86_64-w64-mingw32-gcc tauri build --target x86_64-pc-windows-gnu --no-bundle",
+    "size:mac": "scripts/size-check.sh",
+    "size:windows": "powershell -ExecutionPolicy Bypass -File scripts/size-check.ps1"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0"
+  }
+}
