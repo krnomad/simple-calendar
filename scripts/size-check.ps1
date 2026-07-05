@@ -1,6 +1,6 @@
 param(
-  [string]$Path = "src-tauri\target\release\simple-calendar.exe",
-  [int]$LimitBytes = 10485760
+  [string]$Path = "dist\simple-calendar-windows-x64",
+  [int64]$LimitBytes = 10485760
 )
 
 if (-not (Test-Path $Path)) {
@@ -8,7 +8,17 @@ if (-not (Test-Path $Path)) {
   exit 1
 }
 
-$sizeBytes = (Get-Item $Path).Length
+$item = Get-Item $Path
+if ($item.PSIsContainer) {
+  $sizeBytes = (Get-ChildItem $Path -File -Recurse | Measure-Object -Property Length -Sum).Sum
+} else {
+  $sizeBytes = $item.Length
+}
+
+if ($null -eq $sizeBytes) {
+  $sizeBytes = 0
+}
+
 $sizeMb = [math]::Round($sizeBytes / 1MB, 2)
 $limitMb = [math]::Round($LimitBytes / 1MB, 2)
 

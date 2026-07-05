@@ -16,11 +16,19 @@ References:
 - Tauri describes itself as a framework for small, fast binaries across desktop platforms: https://v2.tauri.app/blog/tauri-20/
 - Tauri build uses `build.frontendDist` for production assets: https://v2.tauri.app/reference/cli/
 - Tauri uses Microsoft Edge WebView2 on Windows, and bundling a fixed WebView2 runtime would add roughly 180MB: https://v2.tauri.app/distribute/windows-installer/
+- Microsoft documents that apps must ship the WebView2 loader code, either by static linking or by including the architecture-matched `WebView2Loader.dll`: https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/distribution
 - Nager.Date official API uses `/api/v4/Holidays/{CountryCode}/{Year}`: https://date.nager.at/api
 
 Windows runtime note:
 
-The portable Windows executable relies on the system WebView2 runtime to stay below 10MB. Tauri documents WebView2 as preinstalled on Windows 11, while older Windows versions may need the Tauri installer path to ensure WebView2 is present. The fixed-runtime option is intentionally not used because it would exceed the size requirement.
+The portable Windows zip relies on the system WebView2 Runtime to stay below 10MB. Tauri documents WebView2 as preinstalled on Windows 11, while older Windows versions may need the Tauri installer path or a manual Microsoft Edge WebView2 Runtime installation to ensure WebView2 is present. The fixed-runtime option is intentionally not used because it would add roughly 180MB and exceed the size requirement.
+
+The Windows portable release must include both:
+
+- `simple-calendar.exe`
+- `WebView2Loader.dll`
+
+`WebView2Loader.dll` is not the full WebView2 Runtime. It is the small native loader that lets the executable locate the installed Runtime. A bare `.exe` can fail with a missing `WebView2Loader.dll` error.
 
 ## Prerequisites
 
@@ -76,28 +84,31 @@ Run these commands on Windows:
 ```powershell
 npm install
 npm run build:portable
+npm run package:windows
 npm run size:windows
 ```
 
-Expected portable executable:
+Expected portable zip:
 
 ```text
-src-tauri\target\release\simple-calendar.exe
+dist\Simple-Calendar-Windows-x64-portable.zip
 ```
 
-Release copy used for handoff:
+Portable folder inside `dist`:
 
 ```text
-dist\simple-calendar.exe
+dist\simple-calendar-windows-x64\
+  simple-calendar.exe
+  WebView2Loader.dll
 ```
 
-This executable is the smallest Windows output. In this repository `npm run build` is intentionally mapped to `tauri build --no-bundle` for the portable target.
+This zip is the smallest Windows output that still includes the required WebView2 loader DLL. In this repository `npm run build` is intentionally mapped to `tauri build --no-bundle` for the portable target.
 
 ```powershell
 npm run build
 ```
 
-Installer outputs are useful for distribution but are not the primary artifact for the 10MB portable target. Use a platform-specific Tauri installer command if an installer is needed.
+Installer outputs are useful for distribution but are not the primary artifact for the 10MB portable target. Use a platform-specific Tauri installer command if you want the installer to bootstrap WebView2 Runtime on machines that do not already have it.
 
 ## Windows Cross Build from macOS
 
@@ -107,13 +118,13 @@ The Windows portable executable can also be cross-built from macOS with the GNU 
 rustup target add x86_64-pc-windows-gnu
 brew install mingw-w64
 npm run build:windows-cross
-cp src-tauri/target/x86_64-pc-windows-gnu/release/simple-calendar.exe dist/simple-calendar.exe
+npm run package:windows-cross
 ```
 
 Verify that the output is a GUI executable, not a console executable:
 
 ```sh
-file dist/simple-calendar.exe
+file dist/simple-calendar-windows-x64/simple-calendar.exe
 ```
 
 Expected output includes:
@@ -127,7 +138,7 @@ PE32+ executable (GUI) x86-64
 The workflow at `.github/workflows/build.yml` builds:
 
 - macOS `.app` bundle on `macos-latest`
-- Windows portable `.exe` on `windows-latest`
+- Windows portable `.zip` on `windows-latest`
 
 Both jobs run the unit checks and the 10MB size check before uploading artifacts.
 

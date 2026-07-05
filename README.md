@@ -15,7 +15,15 @@ Simple Calendar는 Windows와 macOS에서 실행되는 작은 데스크톱 달�
 - 대한민국, 미국, 일본, 중국 공휴일 선택
 - Nager.Date 공개 API를 통한 공휴일 업데이트
 - 네트워크 실패 시 최근 공휴일 캐시 사용
-- macOS 앱 번들과 Windows portable exe 빌드
+- macOS 앱 번들과 Windows portable zip 빌드
+
+### Windows 사전 요구사항
+
+Windows 빌드는 Tauri의 WebView2 기반 앱입니다. `Simple-Calendar-Windows-x64-portable.zip`에는 `simple-calendar.exe`와 `WebView2Loader.dll`을 함께 넣지만, Microsoft Edge WebView2 Runtime 자체는 포함하지 않습니다.
+
+- Windows 11: WebView2 Runtime이 기본 포함되어 있습니다.
+- Windows 10, Windows Server, 정리된 사내 PC: Microsoft Edge WebView2 Runtime이 설치되어 있어야 합니다.
+- WebView2 Runtime까지 동봉하는 fixed runtime 방식은 대략 180MB가 추가되어 이 프로젝트의 10MB 목표와 맞지 않습니다.
 
 ### 개발
 
@@ -40,21 +48,22 @@ npm run build:mac
 npm run size:mac
 ```
 
-Windows portable exe, Windows에서 실행:
+Windows portable zip, Windows에서 실행:
 
 ```powershell
 npm install
 npm run build:portable
+npm run package:windows
 npm run size:windows
 ```
 
-Windows portable exe, macOS에서 cross-build:
+Windows portable zip, macOS에서 cross-build:
 
 ```sh
 rustup target add x86_64-pc-windows-gnu
 brew install mingw-w64
 npm run build:windows-cross
-cp src-tauri/target/x86_64-pc-windows-gnu/release/simple-calendar.exe dist/simple-calendar.exe
+npm run package:windows-cross
 ```
 
 자세한 빌드 설명은 [docs/build.md](docs/build.md)를 참고하세요.
@@ -72,7 +81,15 @@ Simple Calendar is a small desktop calendar app for Windows and macOS. It is bui
 - Holiday country selection for South Korea, the United States, Japan, and China
 - Public holiday updates from the Nager.Date public API
 - Recent holiday cache fallback when the network update fails
-- macOS app bundle and Windows portable exe builds
+- macOS app bundle and Windows portable zip builds
+
+### Windows Prerequisites
+
+The Windows build is a Tauri app backed by WebView2. `Simple-Calendar-Windows-x64-portable.zip` includes both `simple-calendar.exe` and `WebView2Loader.dll`, but it does not include the Microsoft Edge WebView2 Runtime itself.
+
+- Windows 11: WebView2 Runtime is included by default.
+- Windows 10, Windows Server, and locked-down managed PCs: Microsoft Edge WebView2 Runtime must be installed.
+- Bundling the fixed WebView2 runtime would add roughly 180MB, which does not fit this project's 10MB target.
 
 ### Development
 
@@ -97,21 +114,22 @@ npm run build:mac
 npm run size:mac
 ```
 
-Windows portable exe, on Windows:
+Windows portable zip, on Windows:
 
 ```powershell
 npm install
 npm run build:portable
+npm run package:windows
 npm run size:windows
 ```
 
-Windows portable exe, cross-build from macOS:
+Windows portable zip, cross-build from macOS:
 
 ```sh
 rustup target add x86_64-pc-windows-gnu
 brew install mingw-w64
 npm run build:windows-cross
-cp src-tauri/target/x86_64-pc-windows-gnu/release/simple-calendar.exe dist/simple-calendar.exe
+npm run package:windows-cross
 ```
 
 See [docs/build.md](docs/build.md) for platform-specific outputs and verification.
@@ -129,7 +147,15 @@ Simple Calendarは、WindowsとmacOSで動作する小さなデスクトップ�
 - 韓国、米国、日本、中国の祝日国選択
 - Nager.Date公開APIによる祝日更新
 - ネットワーク更新に失敗した場合の最近の祝日キャッシュ利用
-- macOSアプリバンドルとWindows portable exeのビルド
+- macOSアプリバンドルとWindows portable zipのビルド
+
+### Windowsの前提条件
+
+Windows版はWebView2を使用するTauriアプリです。`Simple-Calendar-Windows-x64-portable.zip`には`simple-calendar.exe`と`WebView2Loader.dll`を同梱しますが、Microsoft Edge WebView2 Runtime自体は含めません。
+
+- Windows 11: WebView2 Runtimeは標準で含まれています。
+- Windows 10、Windows Server、管理されたPC: Microsoft Edge WebView2 Runtimeのインストールが必要です。
+- fixed WebView2 runtimeを同梱すると約180MB増えるため、このプロジェクトの10MB目標には合いません。
 
 ### 開発
 
@@ -154,21 +180,22 @@ npm run build:mac
 npm run size:mac
 ```
 
-Windows portable exeをWindowsで作成:
+Windows portable zipをWindowsで作成:
 
 ```powershell
 npm install
 npm run build:portable
+npm run package:windows
 npm run size:windows
 ```
 
-Windows portable exeをmacOSからcross-build:
+Windows portable zipをmacOSからcross-build:
 
 ```sh
 rustup target add x86_64-pc-windows-gnu
 brew install mingw-w64
 npm run build:windows-cross
-cp src-tauri/target/x86_64-pc-windows-gnu/release/simple-calendar.exe dist/simple-calendar.exe
+npm run package:windows-cross
 ```
 
 プラットフォーム別の成果物と検証方法は[docs/build.md](docs/build.md)を参照してください。
@@ -186,7 +213,15 @@ Simple Calendar是一款适用于Windows和macOS的小型桌面日历应用。�
 - 韩国、美国、日本、中国公共假日国家选择
 - 通过Nager.Date公开API更新公共假日
 - 网络更新失败时使用最近的公共假日缓存
-- macOS app bundle和Windows portable exe构建
+- macOS app bundle和Windows portable zip构建
+
+### Windows先决条件
+
+Windows版本是基于WebView2的Tauri应用。`Simple-Calendar-Windows-x64-portable.zip`会包含`simple-calendar.exe`和`WebView2Loader.dll`，但不会包含Microsoft Edge WebView2 Runtime本身。
+
+- Windows 11: 默认包含WebView2 Runtime。
+- Windows 10、Windows Server、受管控的企业电脑: 需要安装Microsoft Edge WebView2 Runtime。
+- 如果捆绑fixed WebView2 runtime，体积会增加约180MB，不符合本项目10MB以内的目标。
 
 ### 开发
 
@@ -211,21 +246,22 @@ npm run build:mac
 npm run size:mac
 ```
 
-Windows portable exe，在Windows上运行:
+Windows portable zip，在Windows上运行:
 
 ```powershell
 npm install
 npm run build:portable
+npm run package:windows
 npm run size:windows
 ```
 
-Windows portable exe，从macOS cross-build:
+Windows portable zip，从macOS cross-build:
 
 ```sh
 rustup target add x86_64-pc-windows-gnu
 brew install mingw-w64
 npm run build:windows-cross
-cp src-tauri/target/x86_64-pc-windows-gnu/release/simple-calendar.exe dist/simple-calendar.exe
+npm run package:windows-cross
 ```
 
 平台相关输出和验证说明请参考[docs/build.md](docs/build.md)。
@@ -235,6 +271,6 @@ cp src-tauri/target/x86_64-pc-windows-gnu/release/simple-calendar.exe dist/simpl
 The release assets are generated from the build output:
 
 - `Simple-Calendar-macOS-arm64.zip`: macOS app bundle
-- `simple-calendar-windows-x64.exe`: Windows portable executable
+- `Simple-Calendar-Windows-x64-portable.zip`: Windows portable folder containing `simple-calendar.exe` and `WebView2Loader.dll`
 
-The app uses the system WebView. Windows 11 includes WebView2 by default; older Windows versions may need WebView2 installed separately.
+The app uses the system WebView. Windows 11 includes WebView2 by default; older Windows versions may need Microsoft Edge WebView2 Runtime installed separately.

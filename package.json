@@ -13,6 +13,8 @@
     "build:mac": "tauri build --bundles app",
     "build:portable": "tauri build --no-bundle",
     "build:windows-cross": "CARGO_BUILD_JOBS=1 CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER=x86_64-w64-mingw32-gcc tauri build --target x86_64-pc-windows-gnu --no-bundle",
+    "package:windows": "powershell -ExecutionPolicy Bypass -File scripts/package-windows-portable.ps1",
+    "package:windows-cross": "scripts/package-windows-portable.sh",
     "size:mac": "scripts/size-check.sh",
     "size:windows": "powershell -ExecutionPolicy Bypass -File scripts/size-check.ps1"
   },

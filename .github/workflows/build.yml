@@ -38,8 +38,9 @@ jobs:
       - run: npm install
       - run: npm run check
       - run: npm run build:portable
+      - run: npm run package:windows
       - run: npm run size:windows
       - uses: actions/upload-artifact@v4
         with:
           name: simple-calendar-windows-portable
-          path: src-tauri/target/release/simple-calendar.exe
+          path: dist/Simple-Calendar-Windows-x64-portable.zip
